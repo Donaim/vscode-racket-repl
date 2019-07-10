@@ -1,0 +1,5 @@
+
+cur=$PWD
+cd "$1"
+racket -i -f "$cur/enter.rkt" "$1" "$2"
+
