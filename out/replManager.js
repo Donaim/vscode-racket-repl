@@ -20,21 +20,23 @@ class REPLManager {
         return vscode.window.createTerminal("Racket");
     }
     //Runs the REPL using the current file.
-    run(fileUri) {
+    run(filepath) {
         return __awaiter(this, void 0, void 0, function* () {
             //Always run in a new terminal (I found no other way to close the Racket shell)
             //Stop the old terminal
             this.stop(this._terminal);
+
             //Create a new terminal
             this._terminal = this.init_terminal();
-            var dir = fileUri.path.substring(0, fileUri.path.lastIndexOf("/"));
+            var dir = filepath.substring(0, filepath.lastIndexOf("/"));
             dir = this.formatPath(dir);
-            const file = fileUri.path.substring(fileUri.path.lastIndexOf("/") + 1);
-            //Start the REPL.
+            const file = filepath.substring(filepath.lastIndexOf("/") + 1);
+            // Start the REPL.
+
             this.launch(dir, file);
-			//Focus terminal.
-			this._terminal.show(false);
-		});
+            // Focus terminal.
+            this._terminal.show(false);
+        });
     }
     //Stops the REPL in the given terminal (defaults to running terminal).
     stop(terminal = this._terminal) {
@@ -87,10 +89,10 @@ class REPLManager {
                 return;
             }
         }
-		//Rust program launches Racket REPL and cleans up terminal, this hides the "sendText" command
+        //Rust program launches Racket REPL and cleans up terminal, this hides the "sendText" command
 
-		this._terminal.sendText(`cd ${__dirname}`); //binaries are stored in "out" folder
-		this._terminal.sendText(launcher);
+        this._terminal.sendText(`cd ${__dirname}`); //binaries are stored in "out" folder
+        this._terminal.sendText(launcher);
     }
 }
 exports.REPLManager = REPLManager;
