@@ -13,7 +13,7 @@ const os = require('os');
 const os_type = os.platform();
 class REPLManager {
     constructor() {
-        this._terminal = this.init_terminal();
+        this._terminal = null;
     }
     //Instantiate a new REPL terminal.
     init_terminal() {
@@ -27,7 +27,6 @@ class REPLManager {
             this.stop(this._terminal);
 
             //Create a new terminal
-            this._terminal = this.init_terminal();
             var dir = filepath.substring(0, filepath.lastIndexOf("/"));
             dir = this.formatPath(dir);
             const file = filepath.substring(filepath.lastIndexOf("/") + 1);
@@ -41,6 +40,8 @@ class REPLManager {
     //Stops the REPL in the given terminal (defaults to running terminal).
     stop(terminal = this._terminal) {
         return __awaiter(this, void 0, void 0, function* () {
+			if (this._terminal == null) { return null; }
+
             terminal.hide();
             const pid = yield terminal.processId;
             //On windows and linux/mac require a different kill method.
@@ -73,26 +74,7 @@ class REPLManager {
     //This is a Rust program which clears the current terminal and then launches the REPL.
     //Each OS has a different binary.
     launch(dir, file) {
-        var launcher;
-        switch (os_type) {
-            case 'win32':
-                launcher = `./launch_windows.bat ${dir} ${file}`;
-                break;
-            case 'linux':
-                launcher = `sh launch_linux ${dir} ${file} ; exit`;
-                break;
-            case 'darwin':
-                launcher = `./launch_mac ${dir} ${file}`;
-                break;
-            default: {
-                vscode.window.showErrorMessage(`Your operating system: ${os_type}, is not yet supported.`);
-                return;
-            }
-        }
-        //Rust program launches Racket REPL and cleans up terminal, this hides the "sendText" command
-
-        this._terminal.sendText(`cd ${__dirname}`); //binaries are stored in "out" folder
-        this._terminal.sendText(launcher);
+		this._terminal = vscode.window.createTerminal("Racket", "/bin/sh", ["-c", `sh ${__dirname}/launch_linux ${dir} ${file}`]);
     }
 }
 exports.REPLManager = REPLManager;
