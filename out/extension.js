@@ -13,8 +13,6 @@ function activate(context) {
 
         //Start REPL
         manager.run(filepath);
-        // Display a message box to the user containing the filename.
-        vscode.window.showInformationMessage('Running: ' + filepath.substr(filepath.lastIndexOf('/') + 1));
     });
     //Register stop command
     let stop = vscode.commands.registerCommand('racket-repl.stop', () => {
