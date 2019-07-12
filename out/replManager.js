@@ -21,11 +21,6 @@ class REPLManager {
             //Always run in a new terminal (I found no other way to close the Racket shell)
             //Stop the old terminal
             this.stop(this._terminal);
-            //Create a new terminal
-            var dir = filepath.substring(0, filepath.lastIndexOf("\\"));
-            dir = this.formatPath(dir);
-            const file = filepath.substring(filepath.lastIndexOf("\\") + 1);
-            vscode.window.showInformationMessage(`Running: "${dir}" "${file}"`);
             //Start the REPL.
             this.launch(filepath);
             //Focus terminal.
