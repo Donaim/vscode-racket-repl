@@ -13,11 +13,7 @@ const os = require('os');
 const os_type = os.platform();
 class REPLManager {
     constructor() {
-        this._terminal = this.init_terminal();
-    }
-    //Instantiate a new REPL terminal.
-    init_terminal() {
-        return vscode.window.createTerminal("Racket");
+        this._terminal = null;
     }
     //Runs the REPL using the current file.
     run(filepath) {
@@ -26,12 +22,12 @@ class REPLManager {
             //Stop the old terminal
             this.stop(this._terminal);
             //Create a new terminal
-            this._terminal = this.init_terminal();
-            var dir = filepath.substring(0, filepath.lastIndexOf("/"));
+            var dir = filepath.substring(0, filepath.lastIndexOf("\\"));
             dir = this.formatPath(dir);
-            const file = filepath.substring(filepath.lastIndexOf("/") + 1);
+            const file = filepath.substring(filepath.lastIndexOf("\\") + 1);
+            vscode.window.showInformationMessage(`Running: "${dir}" "${file}"`);
             //Start the REPL.
-            this.launch(dir, file);
+            this.launch(filepath);
             //Focus terminal.
             this._terminal.show(false);
         });
@@ -70,7 +66,7 @@ class REPLManager {
     //Launches the REPL script.
     //This is a Rust program which clears the current terminal and then launches the REPL.
     //Each OS has a different binary.
-    launch(dir, file) {
+    launch(filepath) {
         var launcher;
         switch (os_type) {
             case 'win32':
@@ -89,7 +85,8 @@ class REPLManager {
         }
         //Rust program launches Racket REPL and cleans up terminal, this hides the "sendText" command
         // this._terminal.sendText(`cd ${__dirname}`); //binaries are stored in "out" folder
-        this._terminal.sendText(`racket -i -f ${__dirname}\\enter.rkt ${dir} ${file}`);
+        this._terminal = vscode.window.createTerminal("Racket", "racket.exe", ["-i", "-f", `${__dirname}\\enter.rkt`, filepath]);
+        // this._terminal.sendText(`racket -i -f ${__dirname}\\enter.rkt ${dir} ${file}`);
     }
 }
 exports.REPLManager = REPLManager;
