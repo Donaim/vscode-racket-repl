@@ -63,7 +63,7 @@ class REPLManager {
     //This is a Rust program which clears the current terminal and then launches the REPL.
     //Each OS has a different binary.
     launch(dir, file) {
-		this._terminal = vscode.window.createTerminal("Racket", "/bin/sh", ["-c", `racket -i -f "${__dirname}/enter.rkt" "${dir}" "${file}"`]);
+		this._terminal = vscode.window.createTerminal("Racket", "racket", ["-i", "-f", `${__dirname}/enter.rkt`, `${dir}`, `${file}`]);
     }
 }
 exports.REPLManager = REPLManager;
