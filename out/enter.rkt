@@ -5,4 +5,6 @@
 (define args (current-command-line-arguments))
 (define dirname (vector-ref args 0))
 (define filename (vector-ref args 1))
+(current-directory (build-path dirname))
+(current-load-relative-directory (build-path dirname))
 (dynamic-enter! (build-path dirname filename))
