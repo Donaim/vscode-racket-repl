@@ -3,5 +3,8 @@
 ; This is a workaround that uses "racket -f ..." instead as proposed here:
 ; https://www.mail-archive.com/racket-users@googlegroups.com/msg39209.html
 (define args (current-command-line-arguments))
-(define filename (vector-ref args 0))
-(dynamic-enter! (build-path filename))
+(define filepath (vector-ref args 0))
+(define-values [dirname filename b] (split-path filepath))
+(current-directory dirname)
+(current-load-relative-directory dirname)
+(dynamic-enter! (build-path filepath))
